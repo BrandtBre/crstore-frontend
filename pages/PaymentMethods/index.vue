@@ -101,7 +101,7 @@ export default {
     },
     async editItem (category) {
       this.$router.push({
-        name: 'paymentMethods-cadastro',
+        name: 'PaymentMethods-cadastro',
         params: { id: category.id }
       });
     }

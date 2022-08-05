@@ -1,13 +1,13 @@
 <template>
   <v-container>
-    <h1>Consulta De Categorias</h1>
+    <h1>Consulta de Endereços</h1>
     <hr>
     <v-container>
       <v-row>
         <v-col>
           <v-btn
             outlined
-            @click="getCategories"
+            @click="getCategories()"
           >
             Pesquisar
             <v-icon style="margin-left: 5%">
@@ -19,7 +19,7 @@
           <v-btn
             style="margin-left: -77%"
             outlined
-            to="/categories/cadastro"
+            to="/Addresses/cadastro"
           >
             Cadastrar
             <v-icon style="margin-left: 5%">
@@ -32,7 +32,7 @@
     <v-container>
       <v-data-table
         :headers="headers"
-        :items="categories"
+        :items="addresses"
         :items-per-page="10"
         class="elevation-1"
       >
@@ -69,39 +69,64 @@ export default {
           value: 'id', //é o dado que essa coluna vai receber
         },
         {
-          text: 'Categoria',
+          text: 'Rua',
           align: 'center',
           sortable: false,
-          value: 'type',
+          value: 'street',
+        },
+        {
+          text: 'Bairro',
+          align: 'center',
+          sortable: false,
+          value: 'district',
+        },
+        {
+          text: 'Numero',
+          align: 'center',
+          sortable: false,
+          value: 'number',
+        },
+        {
+          text: 'Cidade',
+          align: 'center',
+          sortable: false,
+          value: 'city',
+        },
+        {
+          text: 'Codigo do Usuario',
+          align: 'center',
+          sortable: false,
+          value: 'userId',
         },
         
         {text: "", value: "actions"}
       ],
-      categories: []
+      addresses: []
     }
   },
   created () {
-    this.getCategories()
+    this.getAddresses()
   },
   
   methods: {
-    async getCategories () {
-      this.categories = await this.$axios.$get('http://localhost:3333/categories');
+    async getAddresses () {
+      let response = await this.$api.$get('http://localhost:3333/adresses');
+      this.addresses = response.data;
     },
     async destroy (category) {
       try {
         if (confirm(`Do you wish to delete the category: id ${category.id} - ${category.type}?`)) {
-          let response = await this.$axios.$post('http://localhost:3333/categories/destroy', { id: category.id });
+          let response = await this.$api.$post('http://localhost:3333/adresses/destroy', { id: category.id });
           this.$toast(response.message)
-          this.getCategories();
+          this.getAddresses();
         }
       } catch (error) {
-        this.$toast.error('An error has ocurred while trying to delete the category =(');
+        this.$toast.error('An error has ocurred while trying to delete the category =( ');
       }
     },
     async editItem (category) {
       this.$router.push({
-        name: 'Categories-cadastro',
+        name: 'Addresses-cadastro',
         params: { id: category.id }
       });
     }

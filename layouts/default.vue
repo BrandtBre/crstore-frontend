@@ -117,6 +117,16 @@ export default {
           title: 'Payment Methods',
           to: '/paymentMethods'
         },    
+        {
+          icon: 'mdi-map-marker-outline',
+          title: 'Addresses',
+          to: '/addresses'
+        },  
+        {
+          icon: 'mdi-ticket-percent-outline',
+          title: 'Coupons',
+          to: '/coupons'
+        },  
 
       ],
       miniVariant: false,
