@@ -115,9 +115,9 @@ export default {
     },
     async destroy (category) {
       try {
-        if (confirm(`Do you wish to delete the category: id ${category.id} - ${category.type}?`)) {
+        if (confirm(`Do you wish to delete the category: id ${category.id} ?`)) {
           let response = await this.$api.$post('http://localhost:3333/adresses/destroy', { id: category.id });
-          this.$toast(response.message)
+          this.$toast.success(response.message)
           this.getAddresses();
         }
       } catch (error) {

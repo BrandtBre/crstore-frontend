@@ -1,13 +1,13 @@
 <template>
   <v-container>
-    <h1>Consulta De Cupons</h1>
+    <h1>Consulta de Pedidos</h1>
     <hr>
     <v-container>
       <v-row>
         <v-col>
           <v-btn
             outlined
-            @click="getCoupons"
+            @click="getCategories()"
           >
             Pesquisar
             <v-icon style="margin-left: 5%">
@@ -19,7 +19,7 @@
           <v-btn
             style="margin-left: -77%"
             outlined
-            to="/coupons/cadastro"
+            to="/Orders/cadastro"
           >
             Cadastrar
             <v-icon style="margin-left: 5%">
@@ -32,7 +32,7 @@
     <v-container>
       <v-data-table
         :headers="headers"
-        :items="coupons"
+        :items="orders"
         :items-per-page="10"
         class="elevation-1"
       >
@@ -66,50 +66,68 @@ export default {
           text: 'Codigo', //nome da coluna
           align: 'center', //alinhamento -center, end, start
           sortable: false, //se permite ordenação dos dados por essa coluna
-          value: 'code', //é o dado que essa coluna vai receber
+          value: 'id', //é o dado que essa coluna vai receber
         },
         {
-          text: 'Data de Limite',
+          text: 'Status',
           align: 'center',
           sortable: false,
-          value: 'limitDate',
+          value: 'status',
         },
         {
-          text: 'Categoria',
+          text: 'Customer',
           align: 'center',
           sortable: false,
-          value: 'discountPercentage',
+          value: 'customerId',
+        },
+        {
+          text: 'Funcionário',
+          align: 'center',
+          sortable: false,
+          value: 'employeeId',
+        },
+        {
+          text: 'Metodo de Pagamento',
+          align: 'center',
+          sortable: false,
+          value: 'paymentMethodId',
+        },
+        {
+          text: 'Coupon',
+          align: 'center',
+          sortable: false,
+          value: 'couponId',
         },
         
         {text: "", value: "actions"}
       ],
-      coupons: []
+      orders: []
     }
   },
   created () {
-    this.getCoupons()
+    this.getOrders()
   },
   
   methods: {
-    async getCoupons () {
-      this.coupons = await this.$axios.$get('http://localhost:3333/coupons').then(res => res.data);
-      
+    async getOrders () {
+      let response = await this.$api.$get('http://localhost:3333/orders');
+      this.orders = response.data;
     },
-    async destroy (cupom) {
+    async destroy (order) {
       try {
-        if (confirm(`Do you wish to delete the cupom: id ${cupom.id} ?`)) {
-          let response = await this.$axios.$post('http://localhost:3333/coupons/destroy', { id: cupom.id });
+        if (confirm(`Do you wish to delete the order: id ${order.id} ?`)) {
+          let response = await this.$api.$post('http://localhost:3333/orders/destroy', { id: order.id });
           this.$toast(response.message)
-          this.getCoupons();
+          this.getOrders(); 
         }
       } catch (error) {
-        this.$toast.error('An error has ocurred while trying to delete the cupom =(');
+        this.$toast.error('An error has ocurred while trying to delete the order =( ');
       }
     },
-    async editItem (cupom) {
+    async editItem (order) {
       this.$router.push({
-        name: 'Coupons-cadastro',
-        params: { id: cupom.id }
+        name: 'Orders-cadastro',
+        params: { id: order.id }
       });
     }
   }

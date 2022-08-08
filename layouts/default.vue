@@ -127,6 +127,16 @@ export default {
           title: 'Coupons',
           to: '/coupons'
         },  
+        {
+          icon: 'mdi-food-turkey',
+          title: 'Items',
+          to: '/items'
+        },  
+        {
+          icon: 'mdi-notebook-edit-outline',
+          title: 'Orders',
+          to: '/orders'
+        }
 
       ],
       miniVariant: false,

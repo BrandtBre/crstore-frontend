@@ -1,32 +1,19 @@
 <template>
   <v-container>
-    <h1 style="">Cadastro de Coupons <v-icon x-large>mdi-pencil-outline</v-icon></h1>
+    <h1 style="">Registro<v-icon x-large>mdi-pencil-outline</v-icon></h1>
     <hr>
     <v-container style="border: 3px solid ; margin-top: 100px; border-radius:10px" >
       <v-container >
         <v-form v-model="valid">
           <v-container>
-            <v-row> 
-              <v-col
-                cols="2"           
-              >
-                <v-text-field
-                  v-model="coupon.id"
-                  placeholder="ID"
-                  label="ID"
-                  disabled
-                  outlined
-                />
-              </v-col>
-            </v-row>
             <v-row>
               <v-col
                 cols="7"
               >
                 <v-text-field
-                  v-model="coupon.code"
-                  placeholder="Codigo do Cupom"
-                  label="Codigo do Cupom"
+                  v-model="user.username"
+                  placeholder="Nome de Usuario"
+                  label="Nome de Usuario"
                   :rules="rule"
                   required
                   outlined
@@ -38,11 +25,14 @@
               <v-col
                 cols="7"
               >
-                <v-date-picker
-                  v-model="coupon.limitDate"
+                <v-text-field
+                  v-model="user.cpf"
+                  placeholder="cpf"
+                  label="cpf"
+                  :rules="rule"
                   required
                   outlined
-                  :rules="rule"
+                  color="#FFC72C"
                 />
               </v-col>
             </v-row>
@@ -51,9 +41,39 @@
                 cols="7"
               >
                 <v-text-field
-                  v-model="coupon.discountPercentage"
-                  placeholder="Porcentagem de Desconto"
-                  label="Porcentagem de Desconto"
+                  v-model="user.name"
+                  placeholder="Nome"
+                  label="Nome"
+                  :rules="rule"
+                  required
+                  outlined
+                  color="#FFC72C"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col
+                cols="7"
+              >
+                <v-text-field
+                  v-model="user.phone"
+                  placeholder="Telefone"
+                  label="Telefone"
+                  :rules="rule"
+                  required
+                  outlined
+                  color="#FFC72C"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col
+                cols="7"
+              >
+                <v-text-field
+                  v-model="user.role"
+                  placeholder="Ocupação"
+                  label="Ocupação"
                   :rules="rule"
                   required
                   outlined
@@ -67,7 +87,7 @@
       <v-container >
         <v-btn
           outlined
-          to="/coupons"
+          to="/categories"
           color="red"
         >
           Cancelar
@@ -91,48 +111,45 @@ export default {
   data () {
     return {
       valid: false,
-      coupon: {
+      user: {
         id: null,
-        code: null,
-        limitDate: null,
-        discountPercentage: null,
+        username: null,
+        cpf: null,
+        name: null,
+        phone: null,
+        role: null,
       },
       rule: [
         v => !!v || 'Esse campo é obrigatório'
       ]
     }
   },
-  created () {
-    if (this.$route?.params?.id) {
-      this.getById(this.$route.params.id)
-    }
-  },
+  
   methods: {
     async cadastrar () {
       try {
         if (!this.valid) {
           return this.$toast.warning('O formulário de cadastro não é válido!')
         }
-        let coupon = {
-          code: this.coupon.code,
-          limitDate: this.coupon.limitDate,
-          discountPercentage: this.coupon.discountPercentage,
+        let user = {
+          username: this.user.username,
+          cpf: this.user.cpf,
+          name: this.user.name,
+          phone: this.user.phone,
+          role: this.user.role,
         };
-        if (!this.coupon.id) {
-          await this.$axios.$post('http://localhost:3333/coupons/persist', coupon);
-          this.$toast.success('Cadastro realizado com sucesso!');
-          return this.$router.push('/coupons');
-        }
-        await this.$axios.$post(`http://localhost:3333/coupons/persist/${this.coupon.id}`, coupon);
-        this.$toast.success('Cadastro atualizado com sucesso!');
-        return this.$router.push('/coupons');
-      } catch (error) {
+        
+        await this.$api.post('/users/register', user);
+        this.$toast.success('Cadastro realizado com sucesso!');
+        return this.$router.push('/categories');
+        
+      } catch (error) {   
+        console.log(error)
         this.$toast.error('Ocorreu um erro ao realizar o cadastro!');
       }
     },
     async getById (id) {
-      let response = await this.$axios.$get(`http://localhost:3333/coupons/${id}`);
-      this.coupon = response.data;
+      this.user = await this.$api.$get(`http://localhost:3333/adresses/${id}`);
     }
   }
 }

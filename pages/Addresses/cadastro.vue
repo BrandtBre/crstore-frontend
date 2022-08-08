@@ -186,7 +186,8 @@ export default {
       }
     },
     async getById (id) {
-      this.address = await this.$api.$get(`http://localhost:3333/adresses/${id}`);
+      let response = await this.$api.$get(`http://localhost:3333/adresses/${id}`);
+      this.address = response.data
     }
   }
 }

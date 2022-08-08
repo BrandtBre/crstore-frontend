@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1 style="">Cadastro de Coupons <v-icon x-large>mdi-pencil-outline</v-icon></h1>
+    <h1 style="">Cadastro de Produtos/Items<v-icon x-large>mdi-pencil-outline</v-icon></h1>
     <hr>
     <v-container style="border: 3px solid ; margin-top: 100px; border-radius:10px" >
       <v-container >
@@ -11,9 +11,9 @@
                 cols="2"           
               >
                 <v-text-field
-                  v-model="coupon.id"
-                  placeholder="ID"
-                  label="ID"
+                  v-model="item.id"
+                  placeholder="Código"
+                  label="Código"
                   disabled
                   outlined
                 />
@@ -24,9 +24,9 @@
                 cols="7"
               >
                 <v-text-field
-                  v-model="coupon.code"
-                  placeholder="Codigo do Cupom"
-                  label="Codigo do Cupom"
+                  v-model="item.name"
+                  placeholder="Nome"
+                  label="Nome"
                   :rules="rule"
                   required
                   outlined
@@ -38,11 +38,14 @@
               <v-col
                 cols="7"
               >
-                <v-date-picker
-                  v-model="coupon.limitDate"
+                <v-text-field
+                  v-model="item.price"
+                  placeholder="Preço"
+                  label="Preço"
+                  :rules="rule"
                   required
                   outlined
-                  :rules="rule"
+                  color="#FFC72C"
                 />
               </v-col>
             </v-row>
@@ -51,9 +54,9 @@
                 cols="7"
               >
                 <v-text-field
-                  v-model="coupon.discountPercentage"
-                  placeholder="Porcentagem de Desconto"
-                  label="Porcentagem de Desconto"
+                  v-model="item.categoryId"
+                  placeholder="Id Da Categoria"
+                  label="Id Da Categoria"
                   :rules="rule"
                   required
                   outlined
@@ -67,7 +70,7 @@
       <v-container >
         <v-btn
           outlined
-          to="/coupons"
+          to="/items"
           color="red"
         >
           Cancelar
@@ -91,11 +94,11 @@ export default {
   data () {
     return {
       valid: false,
-      coupon: {
+      item: {
         id: null,
-        code: null,
-        limitDate: null,
-        discountPercentage: null,
+        name: null,
+        price: null,
+        categoryId: null,
       },
       rule: [
         v => !!v || 'Esse campo é obrigatório'
@@ -113,26 +116,26 @@ export default {
         if (!this.valid) {
           return this.$toast.warning('O formulário de cadastro não é válido!')
         }
-        let coupon = {
-          code: this.coupon.code,
-          limitDate: this.coupon.limitDate,
-          discountPercentage: this.coupon.discountPercentage,
+        let item = {
+          name: this.item.name,
+          price: this.item.price,
+          categoryId: this.item.categoryId
         };
-        if (!this.coupon.id) {
-          await this.$axios.$post('http://localhost:3333/coupons/persist', coupon);
+        if (!this.item.id) {
+          await this.$api.post('/items/persist', item);
           this.$toast.success('Cadastro realizado com sucesso!');
-          return this.$router.push('/coupons');
+          return this.$router.push('/Items');
         }
-        await this.$axios.$post(`http://localhost:3333/coupons/persist/${this.coupon.id}`, coupon);
+        await this.$api.post(`/items/persist/${this.item.id}`, item);
         this.$toast.success('Cadastro atualizado com sucesso!');
-        return this.$router.push('/coupons');
+        return this.$router.push('/Items');
       } catch (error) {
+        console.log(error)
         this.$toast.error('Ocorreu um erro ao realizar o cadastro!');
       }
     },
     async getById (id) {
-      let response = await this.$axios.$get(`http://localhost:3333/coupons/${id}`);
-      this.coupon = response.data;
+      this.item = await this.$api.$get(`http://localhost:3333/items/${id}`);
     }
   }
 }

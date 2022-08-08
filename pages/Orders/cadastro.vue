@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1 style="">Cadastro de Coupons <v-icon x-large>mdi-pencil-outline</v-icon></h1>
+    <h1 style="">Cadastro de Pedido<v-icon x-large>mdi-pencil-outline</v-icon></h1>
     <hr>
     <v-container style="border: 3px solid ; margin-top: 100px; border-radius:10px" >
       <v-container >
@@ -11,9 +11,9 @@
                 cols="2"           
               >
                 <v-text-field
-                  v-model="coupon.id"
-                  placeholder="ID"
-                  label="ID"
+                  v-model="order.id"
+                  placeholder="Código"
+                  label="Código"
                   disabled
                   outlined
                 />
@@ -24,9 +24,9 @@
                 cols="7"
               >
                 <v-text-field
-                  v-model="coupon.code"
-                  placeholder="Codigo do Cupom"
-                  label="Codigo do Cupom"
+                  v-model="order.userId"
+                  placeholder="Id do Usuario"
+                  label="Id do Usuario"
                   :rules="rule"
                   required
                   outlined
@@ -38,11 +38,14 @@
               <v-col
                 cols="7"
               >
-                <v-date-picker
-                  v-model="coupon.limitDate"
+                <v-text-field
+                  v-model="order.employeeId"
+                  placeholder="Id do Funcionario"
+                  label="Id do Funcionario"
+                  :rules="rule"
                   required
                   outlined
-                  :rules="rule"
+                  color="#FFC72C"
                 />
               </v-col>
             </v-row>
@@ -51,9 +54,24 @@
                 cols="7"
               >
                 <v-text-field
-                  v-model="coupon.discountPercentage"
-                  placeholder="Porcentagem de Desconto"
-                  label="Porcentagem de Desconto"
+                  v-model="order.paymentMethodId"
+                  placeholder="metodo de pagamento"
+                  label="metodo de pagamento"
+                  :rules="rule"
+                  required
+                  outlined
+                  color="#FFC72C"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col
+                cols="7"
+              >
+                <v-text-field
+                  v-model="order.couponId"
+                  placeholder="Coupon"
+                  label="Coupon"
                   :rules="rule"
                   required
                   outlined
@@ -67,7 +85,7 @@
       <v-container >
         <v-btn
           outlined
-          to="/coupons"
+          to="/orderes"
           color="red"
         >
           Cancelar
@@ -91,11 +109,13 @@ export default {
   data () {
     return {
       valid: false,
-      coupon: {
+      order: {
         id: null,
-        code: null,
-        limitDate: null,
-        discountPercentage: null,
+        status: null,
+        customerId: null,
+        employeeId: null,
+        paymentMethodId: null,
+        couponId: null       
       },
       rule: [
         v => !!v || 'Esse campo é obrigatório'
@@ -113,26 +133,29 @@ export default {
         if (!this.valid) {
           return this.$toast.warning('O formulário de cadastro não é válido!')
         }
-        let coupon = {
-          code: this.coupon.code,
-          limitDate: this.coupon.limitDate,
-          discountPercentage: this.coupon.discountPercentage,
+        let order = {
+          status: this.order.status,
+          customerId: this.order.customerId,
+          employeeId: this.order.employeeId,
+          paymentMethodId: this.order.paymentMethodId,
+          couponId: this.order.couponId,
         };
-        if (!this.coupon.id) {
-          await this.$axios.$post('http://localhost:3333/coupons/persist', coupon);
+        if (!this.order.id) {
+          await this.$api.post('/orders/persist', order);
           this.$toast.success('Cadastro realizado com sucesso!');
-          return this.$router.push('/coupons');
+          return this.$router.push('/Orders');
         }
-        await this.$axios.$post(`http://localhost:3333/coupons/persist/${this.coupon.id}`, coupon);
+        await this.$api.post(`/orders/persist/${this.order.id}`, order);
         this.$toast.success('Cadastro atualizado com sucesso!');
-        return this.$router.push('/coupons');
+        return this.$router.push('/Orders');
       } catch (error) {
         this.$toast.error('Ocorreu um erro ao realizar o cadastro!');
       }
     },
+
     async getById (id) {
-      let response = await this.$axios.$get(`http://localhost:3333/coupons/${id}`);
-      this.coupon = response.data;
+      let response = await this.$api.$get(`http://localhost:3333/orders/${id}`);
+      this.order = response.data;
     }
   }
 }
