@@ -64,7 +64,7 @@
 <script>
 
 export default {
-  layout: 'adminLayout',
+  layout: 'userLayout',
   data () {
     return {
       valid: false,

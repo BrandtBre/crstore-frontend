@@ -1,46 +1,63 @@
 <template>
   <v-container>
+    <h1>Consulta De Categorias</h1>
+    <hr>
     <v-container>
-      <v-container style="text-align: center">
-        <h1>Categorias</h1>
-        <hr>
-      </v-container>
-      <v-container>
-        <v-row>
-          <v-card
-            v-for="(category, i) in categories"
-              :key="i"
-              router
-              exact
-              style="margin: 10px; border: 5px solid #e2e3ca "
+      <v-row>
+        <v-col>
+          <v-btn
+            outlined
+            @click="getCategories"
           >
-            <v-img
-              max-width="250px"
-              max-height="250px"
-              src="https://cdn.pixabay.com/photo/2020/06/26/16/04/chef-5343214_960_720.png"   
-            ></v-img>
-            <v-row>
-              <v-card-title>
-                {{ category.type }}
-              </v-card-title>
-              <v-card-actions>
-                <v-btn
-                  color="green lighten-2"
-                  text
-                  @click="getItemsByid(category.id)"
-                >Procurar</v-btn>
-              </v-card-actions>
-            </v-row>
-          </v-card>
-        </v-row>
-      </v-container>
+            Pesquisar
+            <v-icon style="margin-left: 5%">
+              mdi-magnify
+            </v-icon>
+          </v-btn>
+        </v-col>
+        <v-col>
+          <v-btn
+            style="margin-left: -77%"
+            outlined
+            to="/categories/cadastro"
+          >
+            Cadastrar
+            <v-icon style="margin-left: 5%">
+              mdi-plus-circle-outline
+            </v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-container>
+      <v-data-table
+        :headers="headers"
+        :items="categories"
+        :items-per-page="10"
+        class="elevation-1"
+      >
+        <template v-slot:item.actions="{ item }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="editItem(item)"
+              >
+                mdi-pencil
+              </v-icon>
+              <v-icon
+                small
+                @click="destroy(item)"
+              >
+                mdi-delete
+              </v-icon>
+        </template>
+      </v-data-table>
     </v-container>
   </v-container>
 </template>
 
 <script>
 export default {
-  layout: "userLayout",
   name: 'ConsultaAutoresPage',
   data () {
     return {
@@ -60,13 +77,7 @@ export default {
         
         {text: "", value: "actions"}
       ],
-      categories: [],
-      item: {
-        id: null,
-        name: null,
-        price: null,
-        categoryId: null,
-      },
+      categories: []
     }
   },
   created () {
@@ -77,14 +88,6 @@ export default {
     async getCategories () {
       this.categories = await this.$axios.$get('http://localhost:3333/categories');
     },
-
-    async getItemsByid (id) {
-      this.$router.push({
-        name: 'Items',
-        params: { categoryId: id }
-      });
-    },
-
     async destroy (category) {
       try {
         if (confirm(`Do you wish to delete the category: id ${category.id} - ${category.type}?`)) {
@@ -98,12 +101,10 @@ export default {
     },
     async editItem (category) {
       this.$router.push({
-        name: 'Categories-index',
+        name: 'Categories-cadastro',
         params: { id: category.id }
       });
     }
   }
 }
-
 </script>
-

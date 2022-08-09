@@ -1,50 +1,63 @@
 <template>
   <v-container>
+    <h1>Consulta De Produtos</h1>
+    <hr>
     <v-container>
-      <v-container style="text-align: center">
-        <h1>Produtos</h1>
-        <hr>
-      </v-container>
-      <v-container>
-        <v-row>
-          <v-card
-            v-for="(item, i) in items"
-              :key="i"
-              router
-              exact
-              style="margin: 10px; border: 5px solid #e2e3ca "
+      <v-row>
+        <v-col>
+          <v-btn
+            outlined
+            @click="getItems()"
           >
-            <v-img
-              max-width="250px"
-              max-height="250px"
-              src="https://cdn.pixabay.com/photo/2020/06/26/16/04/chef-5343214_960_720.png"   
-            ></v-img>
-            <v-row>
-              <v-col>
-                <v-card-title>
-                  {{ item.name }}
-                </v-card-title> 
-              </v-col>            
-            </v-row>
-            <v-card-text>
-              <v-row>
-                <v-col>
-                  <div >
-                    $ • {{ item.price }}
-                  </div>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-        </v-row>
-      </v-container>
+            Pesquisar
+            <v-icon style="margin-left: 5%">
+              mdi-magnify
+            </v-icon>
+          </v-btn>
+        </v-col>
+        <v-col>
+          <v-btn
+            style="margin-left: -77%"
+            outlined
+            to="/items/cadastro"
+          >
+            Cadastrar
+            <v-icon style="margin-left: 5%">
+              mdi-plus-circle-outline
+            </v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-container>
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        :items-per-page="10"
+        class="elevation-1"
+      >
+        <template v-slot:item.actions="{ item }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="editItem(item)"
+              >
+                mdi-pencil
+              </v-icon>
+              <v-icon
+                small
+                @click="destroy(item)"
+              >
+                mdi-delete
+              </v-icon>
+        </template>
+      </v-data-table>
     </v-container>
   </v-container>
 </template>
 
 <script>
 export default {
-  layout: "userLayout",
   name: 'ConsultaAutoresPage',
   data () {
     return {
@@ -75,29 +88,18 @@ export default {
         },
         {text: "", value: "actions"}
       ],
-      categories: [],
-      items: [],
+      items: []
     }
   },
   created () {
-    if (this.$route?.params?.categoryId) {
-      return this.getItems(this.$route.params.categoryId)
-    } 
-    this.getAllItems();
+    this.getItems()
   },
   
   methods: {
-    async getItems (categoryId) {
-      let response = await this.$api.get(`/items/category/${categoryId}`);
+    async getItems () {
+      let response = await this.$axios.$get('http://localhost:3333/items');
       this.items = response.data;
     },
-
-    async getAllItems () {
-      let response = await this.$api.get('/items/');
-      console.log(response);
-      this.items = response.data;
-    },
-
     async destroy (product) {
       try {
         if (confirm(`Do you wish to delete the product: id ${product.id} ?`)) {
@@ -117,5 +119,4 @@ export default {
     }
   }
 }
-
 </script>
