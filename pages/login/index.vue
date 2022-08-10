@@ -15,7 +15,7 @@
         </v-col>
         <v-col>
           <v-container style="padding:20%; background-color:#FFC72C; border-radius:5px; margin-top: -200px;">
-            <form action="">
+            <v-form action="" v-model="valid">
               <v-text-field
                 outlined
                 v-model="user.username"
@@ -44,7 +44,7 @@
                 </a>
               </v-col>        
               <v-btn style="background-color:#DA291C; width: 100% ; margin-top: 15px; padding: 7%" @click="logar">ENTRAR</v-btn>
-              <p style="text-align: center; margin-top: 20px;">Não tem uma conta? <a style="font-weight:bold; color:#DA291C; ">Registre-se</a></p>
+              <p style="text-align: center; margin-top: 20px;">Não tem uma conta? <a href="/login/registrar/" style="font-weight:bold; color:#DA291C; @click=">Registre-se</a></p>
               <v-row>
                 <v-col>
                   <hr>
@@ -53,7 +53,7 @@
                   <hr>
                 </v-col>
               </v-row>
-            </form>
+            </v-form>
           </v-container>
         </v-col>
       </v-row>
@@ -81,20 +81,27 @@ export default {
   methods: {
     async logar () {
       try {
+        if (!this.valid) {
+          return this.$toast.info('Informe dados validos para o login =|');
+        };
+
         let user = {
           username: this.user.username,
           password: this.user.password,
         };
 
         let response = await this.$api.post('/users/login', user);
+        
+        if (response.type !== 'success') {
+          return this.$toast.error(response.message)
+        };
 
         this.$toast.success(response.message);
         
         localStorage.setItem('crstore-api-token', response.token);
         
       } catch (error) {
-        console.log(error)
-        this.$toast.error('Ocorreu um erro ao realizar o cadastro!');
+        this.$toast.error('Ocorreu um erro barbaridade =(');
       }
     },
 

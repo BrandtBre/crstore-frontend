@@ -42,13 +42,8 @@
       >
         <v-icon>mdi-application</v-icon>
       </v-btn>
-      <v-btn
-        icon
-        @click.stop="fixed = !fixed"
-      >
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title" />
+      
+      <v-toolbar-title v-text="title" style=" color: red;"/>
       <v-spacer />
       <v-btn
         icon
@@ -99,7 +94,7 @@ export default {
       items: [
         {
           icon: 'mdi-home',
-          title: 'Welcome',
+          title: 'Olá',
           to: '/'
         },
         {
@@ -109,35 +104,19 @@ export default {
         },   
         {
           icon: 'mdi-food',
-          title: 'Categories',
+          title: 'Categorias',
           to: '/categories'
         },    
         {
-          icon: 'mdi-cash-100',
-          title: 'Payment Methods',
-          to: '/paymentMethods'
-        },    
-        {
           icon: 'mdi-map-marker-outline',
-          title: 'Addresses',
+          title: 'Meus Endereços',
           to: '/addresses'
         },  
         {
-          icon: 'mdi-ticket-percent-outline',
-          title: 'Coupons',
-          to: '/coupons'
-        },  
-        {
           icon: 'mdi-food-turkey',
-          title: 'Items',
+          title: 'Produtos',
           to: '/items'
-        },  
-        {
-          icon: 'mdi-notebook-edit-outline',
-          title: 'Orders',
-          to: '/orders'
-        }
-
+        },
       ],
       miniVariant: false,
       right: true,

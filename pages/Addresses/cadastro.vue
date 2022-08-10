@@ -94,21 +94,6 @@
                 />
               </v-col>
             </v-row>
-            <v-row>
-              <v-col
-                cols="7"
-              >
-                <v-text-field
-                  v-model="address.userId"
-                  placeholder="Id do Usuario"
-                  label="Id do Usuario"
-                  :rules="rule"
-                  required
-                  outlined
-                  color="#FFC72C"
-                />
-              </v-col>
-            </v-row>
           </v-container>
         </v-form>
       </v-container >
@@ -145,8 +130,7 @@ export default {
         district: null,
         number: null,
         city: null,
-        complement: null,
-        userId: null
+        complement: null
       },
       rule: [
         v => !!v || 'Esse campo é obrigatório'
@@ -163,20 +147,22 @@ export default {
       try {
         if (!this.valid) {
           return this.$toast.warning('O formulário de cadastro não é válido!')
-        }
+        };
+
         let address = {
           street: this.address.street,
           district: this.address.district,
           number: this.address.number,
           city: this.address.city,
-          complement: this.address.complement,
-          userId: this.address.userId
+          complement: this.address.complement
         };
+
         if (!this.address.id) {
           await this.$api.post('/adresses/persist', address);
           this.$toast.success('Cadastro realizado com sucesso!');
           return this.$router.push('/Addresses');
-        }
+        };
+
         await this.$api.post(`/adresses/persist/${this.address.id}`, address);
         this.$toast.success('Cadastro atualizado com sucesso!');
         return this.$router.push('/Addresses');
@@ -187,6 +173,7 @@ export default {
     },
     async getById (id) {
       let response = await this.$api.$get(`http://localhost:3333/adresses/${id}`);
+      console.log(response);
       this.address = response.data
     }
   }

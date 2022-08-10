@@ -71,6 +71,21 @@
                 cols="7"
               >
                 <v-text-field
+                  v-model="user.password"
+                  placeholder="Senha"
+                  label="Senha"
+                  :rules="rule"
+                  required
+                  outlined
+                  color="#FFC72C"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col
+                cols="7"
+              >
+                <v-text-field
                   v-model="user.role"
                   placeholder="Ocupação"
                   label="Ocupação"
@@ -117,6 +132,7 @@ export default {
         cpf: null,
         name: null,
         phone: null,
+        password: null,
         role: null,
       },
       rule: [
@@ -136,6 +152,7 @@ export default {
           cpf: this.user.cpf,
           name: this.user.name,
           phone: this.user.phone,
+          password: this.user.password,
           role: this.user.role,
         };
         

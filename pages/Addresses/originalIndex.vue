@@ -61,10 +61,9 @@ export default {
   name: 'ConsultaAutoresPage',
   data () {
     return {
-      layout: "userLayout",
       headers: [
         {
-          text: 'Código', //nome da coluna
+          text: 'Codigo', //nome da coluna
           align: 'center', //alinhamento -center, end, start
           sortable: false, //se permite ordenação dos dados por essa coluna
           value: 'id', //é o dado que essa coluna vai receber
@@ -93,51 +92,43 @@ export default {
           sortable: false,
           value: 'city',
         },
+        {
+          text: 'Codigo do Usuario',
+          align: 'center',
+          sortable: false,
+          value: 'userId',
+        },
         
         {text: "", value: "actions"}
       ],
       addresses: []
     }
   },
-
   created () {
-    this.getAdressByUserId();
+    this.getAddresses()
   },
   
   methods: {
     async getAddresses () {
-      let response = await this.$api.get('/adresses');
+      let response = await this.$api.$get('http://localhost:3333/adresses');
       this.addresses = response.data;
     },
-
-    async getAdressByUserId () {
+    async destroy (category) {
       try {
-        let response = await this.$api.get('/adresses/user');
-        console.log(response)
-        this.addresses = response.data;       
-      } catch (error) {
-        this.$toast.error('Não foi possível buscas os seus endereços, mals ae =( ');
-      }
-    },
-
-    async destroy (address) {
-      try {
-        if (confirm(`Quer deleta o endereço: id ${address.id} ?`)) {
-          let response = await this.$api.post('http://localhost:3333/adresses/destroy', { id: address.id });
+        if (confirm(`Do you wish to delete the category: id ${category.id} ?`)) {
+          let response = await this.$api.$post('http://localhost:3333/adresses/destroy', { id: category.id });
           this.$toast.success(response.message)
-          this.getAdressByUserId();
+          this.getAddresses();
         }
       } catch (error) {
         this.$toast.error('An error has ocurred while trying to delete the category =( ');
       }
     },
-
     async editItem (category) {
-      try {
-        
-      } catch (error) {
-        
-      }
+      this.$router.push({
+        name: 'Addresses-cadastro',
+        params: { id: category.id }
+      });
     }
   }
 }
