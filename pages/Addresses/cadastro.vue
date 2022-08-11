@@ -163,7 +163,7 @@ export default {
           return this.$router.push('/Addresses');
         };
 
-        await this.$api.post(`/adresses/persist/${this.address.id}`, address);
+        await this.$api.post(`/adresses/persist/${id}`, address);
         this.$toast.success('Cadastro atualizado com sucesso!');
         return this.$router.push('/Addresses');
       } catch (error) {
@@ -172,9 +172,8 @@ export default {
       }
     },
     async getById (id) {
-      let response = await this.$api.$get(`http://localhost:3333/adresses/${id}`);
-      console.log(response);
-      this.address = response.data
+      let response = await this.$api.get(`/adresses/${id}`);
+      this.address = response.data;
     }
   }
 }

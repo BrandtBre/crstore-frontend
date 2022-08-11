@@ -27,13 +27,29 @@
               </v-col>            
             </v-row>
             <v-card-text>
-              <v-row>
-                <v-col>
-                  <div >
-                    $ • {{ item.price }}
-                  </div>
-                </v-col>
-              </v-row>
+              <v-container>
+                <v-row>
+                  <v-col>
+                    <div >
+                      $ • {{ item.price }}
+                    </div>
+                  </v-col>
+                </v-row>
+                <v-row style="margin-left: -20%">
+                  <v-col>
+                    <v-card-actions>
+                      <v-btn
+                        color="yellow lighten-2"
+                        text
+                        outlined
+                        @click="addToCart(item)"
+                      >
+                        Comprar
+                      </v-btn>
+                    </v-card-actions>
+                  </v-col>
+                </v-row>
+              </v-container>
             </v-card-text>
           </v-card>
         </v-row>
@@ -77,6 +93,11 @@ export default {
       ],
       categories: [],
       items: [],
+      cart: {
+        id: null,
+        items: null,
+        userId: null,
+      }
     }
   },
   created () {
@@ -92,9 +113,19 @@ export default {
       this.items = response.data;
     },
 
+    async addToCart (item) {
+      let cart = {
+        items: item
+      };
+
+      if(confirm(`Quer adicionar esse produto no carrinho ?`)){
+        await this.$api.post('/carts/persist', cart);
+        this.$toast.success(`Produto ${item.name} adicionado ao carrinho com sucesso`);
+      }
+    },
+
     async getAllItems () {
       let response = await this.$api.get('/items/');
-      console.log(response);
       this.items = response.data;
     },
 

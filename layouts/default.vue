@@ -108,15 +108,20 @@ export default {
           to: '/categories'
         },    
         {
+          icon: 'mdi-food-turkey',
+          title: 'Produtos',
+          to: '/items'
+        },
+        {
           icon: 'mdi-map-marker-outline',
           title: 'Meus Endereços',
           to: '/addresses'
         },  
         {
-          icon: 'mdi-food-turkey',
-          title: 'Produtos',
-          to: '/items'
-        },
+          icon: 'mdi-cart-outline',
+          title: 'Carrinho',
+          to: '/carts'
+        }
       ],
       miniVariant: false,
       right: true,

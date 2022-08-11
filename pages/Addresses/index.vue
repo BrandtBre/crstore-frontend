@@ -113,7 +113,6 @@ export default {
     async getAdressByUserId () {
       try {
         let response = await this.$api.get('/adresses/user');
-        console.log(response)
         this.addresses = response.data;       
       } catch (error) {
         this.$toast.error('Não foi possível buscas os seus endereços, mals ae =( ');
@@ -132,12 +131,14 @@ export default {
       }
     },
 
-    async editItem (category) {
-      try {
-        
-      } catch (error) {
-        
-      }
+    async editItem (address) {
+      console.log(address)
+      this.$router.push({
+        name: 'Addresses-cadastro',
+        params: {
+          id: address.id
+        }
+      })
     }
   }
 }
