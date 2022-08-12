@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1 style="">Cadastro de Metodos de Pagamentos <v-icon x-large>mdi-pencil-outline</v-icon></h1>
+    <h1 style="">Cadastro de Coupons <v-icon x-large>mdi-pencil-outline</v-icon></h1>
     <hr>
     <v-container style="border: 3px solid ; margin-top: 100px; border-radius:10px" >
       <v-container >
@@ -11,9 +11,9 @@
                 cols="2"           
               >
                 <v-text-field
-                  v-model="paymentMethods.id"
-                  placeholder="Código"
-                  label="Código"
+                  v-model="coupon.id"
+                  placeholder="ID"
+                  label="ID"
                   disabled
                   outlined
                 />
@@ -24,9 +24,36 @@
                 cols="7"
               >
                 <v-text-field
-                  v-model="paymentMethods.type"
-                  placeholder="Tipo"
-                  label="Tipo"
+                  v-model="coupon.code"
+                  placeholder="Codigo do Cupom"
+                  label="Codigo do Cupom"
+                  :rules="rule"
+                  required
+                  outlined
+                  color="#FFC72C"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col
+                cols="7"
+              >
+                <v-date-picker
+                  v-model="coupon.limitDate"
+                  required
+                  outlined
+                  :rules="rule"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col
+                cols="7"
+              >
+                <v-text-field
+                  v-model="coupon.discountPercentage"
+                  placeholder="Porcentagem de Desconto"
+                  label="Porcentagem de Desconto"
                   :rules="rule"
                   required
                   outlined
@@ -40,7 +67,7 @@
       <v-container >
         <v-btn
           outlined
-          to="/paymentMethods"
+          to="/coupons"
           color="red"
         >
           Cancelar
@@ -59,14 +86,16 @@
 
 <script>
 export default {
-  layout: 'adminLayout',
+  layout: 'originalDefault',
   name: 'CadastroAutoresPage',
   data () {
     return {
       valid: false,
-      paymentMethods: {
+      coupon: {
         id: null,
-        type: null
+        code: null,
+        limitDate: null,
+        discountPercentage: null,
       },
       rule: [
         v => !!v || 'Esse campo é obrigatório'
@@ -84,23 +113,26 @@ export default {
         if (!this.valid) {
           return this.$toast.warning('O formulário de cadastro não é válido!')
         }
-        let paymentMethods = {
-          type: this.paymentMethods.type
+        let coupon = {
+          code: this.coupon.code,
+          limitDate: this.coupon.limitDate,
+          discountPercentage: this.coupon.discountPercentage,
         };
-        if (!this.paymentMethods.id) {
-          await this.$axios.$post('http://localhost:3333/payment-methods/persist', paymentMethods);
+        if (!this.coupon.id) {
+          await this.$axios.$post('http://localhost:3333/coupons/persist', coupon);
           this.$toast.success('Cadastro realizado com sucesso!');
-          return this.$router.push('/paymentMethods');
+          return this.$router.push('/coupons');
         }
-        await this.$axios.$post(`http://localhost:3333/payment-methods/persist/${this.paymentMethods.id}`, paymentMethods);
+        await this.$axios.$post(`http://localhost:3333/coupons/persist/${this.coupon.id}`, coupon);
         this.$toast.success('Cadastro atualizado com sucesso!');
-        return this.$router.push('/paymentMethods');
+        return this.$router.push('/coupons');
       } catch (error) {
         this.$toast.error('Ocorreu um erro ao realizar o cadastro!');
       }
     },
     async getById (id) {
-      this.paymentMethods = await this.$axios.$get(`http://localhost:3333/payment-methods/${id}`);
+      let response = await this.$axios.$get(`http://localhost:3333/coupons/${id}`);
+      this.coupon = response.data;
     }
   }
 }

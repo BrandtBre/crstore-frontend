@@ -1,73 +1,50 @@
 <template>
  <v-container>
-    <v-container style="margin-top: 200px">
-      <v-row>
-        <v-col>
-          <h1><v-icon style="color:#FFC72C;" x-large>mdi-food-fork-drink</v-icon>CRStore</h1>
-        </v-col>
-      </v-row>
+    <h1>Home Page</h1>
+    <hr>
+    <v-container>
+      <p>Faça login para poder comprar em nossa loja</p>
     </v-container>
-    <v-container style="margin-top: 60px">
-      <v-row>
-        <v-col>
-          <h1 style="font-size: 55px">Faça seu login</h1>
-          <h1 style="font-size: 55px">na plataforma</h1>
-        </v-col>
-        <v-col>
-          <v-container style="padding:20%; background-color:#FFC72C; border-radius:5px; margin-top: -200px;">
-            <form action="">
-              <v-text-field
-                outlined
-                v-model="user.username"
-                label="Nome de Usuario"
-                prepend-inner-icon="mdi-account-circle-outline"
-                color="#DA291C"
-                background-color="white"      
-                :rules="rule"
-                required         
-              >
-              </v-text-field>           
-              <v-text-field
-                outlined
-                v-model="user.password"
-                label="Senha"
-                prepend-inner-icon="mdi-lock"
-                color="#DA291C"
-                background-color="white"
-                type="password"
-                :rules="rule"
-                required                  
-              ></v-text-field>
-              <v-col style="margin-top: -20px;">
-                <a href="forgotPassword" style="font-weight:bold; color:#DA291C; font-size: 15px;">
-                Esqueci minha senha
-                </a>
-              </v-col>        
-              <v-btn style="background-color:#DA291C; width: 100% ; margin-top: 15px; padding: 7%" @click="logar">ENTRAR</v-btn>
-              <p style="text-align: center; margin-top: 20px;">Não tem uma conta? <a style="font-weight:bold; color:#DA291C; ">Registre-se</a></p>
-              <v-row>
-                <v-col>
-                  <hr>
-                </v-col>
-                <v-col>
-                  <hr>
-                </v-col>
-              </v-row>
-            </form>
-          </v-container>
-        </v-col>
-      </v-row>
-    </v-container>
+    <v-container>
+        <v-row>
+          <v-card
+            v-for="(category, i) in categories"
+              :key="i"
+              router
+              exact
+              style="margin: 10px; border: 5px solid #e2e3ca "
+          >
+            <v-img
+              max-width="250px"
+              max-height="250px"
+              src="https://cdn.pixabay.com/photo/2020/06/26/16/04/chef-5343214_960_720.png"   
+            ></v-img>
+            <v-row>
+              <v-card-title>
+                {{ category.type }}
+              </v-card-title>
+              <v-card-actions>
+                <v-btn
+                  color="green lighten-2"
+                  text
+                  @click="getItemsByid(category.id)"
+                >Procurar</v-btn>
+              </v-card-actions>
+            </v-row>
+          </v-card>
+        </v-row>
+      </v-container>
   </v-container>
 </template>
 
 <script>
 
 export default {
-  layout: 'userLayout',
+  layout: 'futureDefault',
   data () {
     return {
       valid: false,
+      categories: [],
       user: {
         username: null,
         password: null
@@ -78,7 +55,22 @@ export default {
     }
   },
 
+  created () {
+    this.getCategories()
+  },
+
   methods: {
+    async getCategories () {
+      this.categories = await this.$axios.$get('http://localhost:3333/categories');
+    },
+
+    async getItemsByid (id) {
+      this.$router.push({
+        name: 'Items',
+        params: { categoryId: id }
+      });
+    },
+
     async logar () {
       try {
         let user = {

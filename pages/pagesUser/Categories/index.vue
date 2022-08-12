@@ -80,7 +80,7 @@ export default {
 
     async getItemsByid (id) {
       this.$router.push({
-        name: 'Items',
+        name: 'pagesUser-Items',
         params: { categoryId: id }
       });
     },

@@ -64,7 +64,7 @@
 <script>
 
 export default {
-  layout: 'adminLayout',
+  layout: 'futureDefault',
   data () {
     return {
       valid: false,
@@ -91,14 +91,17 @@ export default {
         };
 
         let response = await this.$api.post('/users/login', user);
+          console.log(response);    
         
         if (response.type !== 'success') {
           return this.$toast.error(response.message)
         };
+        console.log(response)
+        this.$toast.success(response.message);  
+        localStorage.setItem('crstore-api-token', response.data);
 
-        this.$toast.success(response.message);
-        
-        localStorage.setItem('crstore-api-token', response.token);
+        const route = response.role === 'admin' ? 'pagesAdmin' : 'pagesUser';
+        this.$router.push(route);
         
       } catch (error) {
         this.$toast.error('Ocorreu um erro barbaridade =(');

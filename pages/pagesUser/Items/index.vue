@@ -53,7 +53,7 @@
             </v-card-text>
           </v-card>
         </v-row>
-      </v-container>
+      </v-container>    
     </v-container>
   </v-container>
 </template>
@@ -114,14 +114,13 @@ export default {
     },
 
     async addToCart (item) {
-      let cart = {
-        items: item
-      };
+      this.$router.push({
+        name: 'pagesUser-Orders-cadastro',
+        params: { 
+          id: item.id,
 
-      if(confirm(`Quer adicionar esse produto no carrinho ?`)){
-        await this.$api.post('/carts/persist', cart);
-        this.$toast.success(`Produto ${item.name} adicionado ao carrinho com sucesso`);
-      }
+        }
+      });
     },
 
     async getAllItems () {

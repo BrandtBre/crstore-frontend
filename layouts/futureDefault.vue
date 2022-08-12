@@ -85,7 +85,7 @@
 
 <script>
 export default {
-  name: 'DefaultLayout',
+  name: 'futureDefaultLayout',
   data () {
     return {
       clipped: false,
@@ -95,33 +95,13 @@ export default {
         {
           icon: 'mdi-home',
           title: 'Olá',
-          to: '/pagesUser'
+          to: '/'
         },
         {
           icon: 'mdi-account',
-          title: 'Logout',
-          to: '/pagesUser/lougOut'
+          title: 'Login',
+          to: '/login'
         },   
-        {
-          icon: 'mdi-food',
-          title: 'Categorias',
-          to: '/pagesUser/categories'
-        },    
-        {
-          icon: 'mdi-food-turkey',
-          title: 'Produtos',
-          to: '/pagesUser/items'
-        },
-        {
-          icon: 'mdi-map-marker-outline',
-          title: 'Meus Endereços',
-          to: '/pagesUser/addresses'
-        },  
-        {
-          icon: 'mdi-cart-outline',
-          title: 'Carrinho',
-          to: '/pagesUser/carts'
-        }
       ],
       miniVariant: false,
       right: true,
@@ -139,14 +119,13 @@ export default {
     async validacao () {
       const token = localStorage.getItem('crstore-api-token') || '';
 
-      let response = await this.$api.get('/users/validate-token', {
+      let response = await this.$api.$get('http://localhost:3333/users/validate-token', {
         headers: {Authorization: `Bearer ${token}`}
       });
 
       if (response.type !== 'success') {
         this.$toast.info('Você não tem permissão para acessar esse recurso');
-      }
-      
+      }   
     }
 
 

@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1 style="">Cadastro de Coupons <v-icon x-large>mdi-pencil-outline</v-icon></h1>
+    <h1 style="">Cadastro de Categorias <v-icon x-large>mdi-pencil-outline</v-icon></h1>
     <hr>
     <v-container style="border: 3px solid ; margin-top: 100px; border-radius:10px" >
       <v-container >
@@ -11,9 +11,9 @@
                 cols="2"           
               >
                 <v-text-field
-                  v-model="coupon.id"
-                  placeholder="ID"
-                  label="ID"
+                  v-model="category.id"
+                  placeholder="Código"
+                  label="Código"
                   disabled
                   outlined
                 />
@@ -24,36 +24,9 @@
                 cols="7"
               >
                 <v-text-field
-                  v-model="coupon.code"
-                  placeholder="Codigo do Cupom"
-                  label="Codigo do Cupom"
-                  :rules="rule"
-                  required
-                  outlined
-                  color="#FFC72C"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col
-                cols="7"
-              >
-                <v-date-picker
-                  v-model="coupon.limitDate"
-                  required
-                  outlined
-                  :rules="rule"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col
-                cols="7"
-              >
-                <v-text-field
-                  v-model="coupon.discountPercentage"
-                  placeholder="Porcentagem de Desconto"
-                  label="Porcentagem de Desconto"
+                  v-model="category.type"
+                  placeholder="Tipo"
+                  label="Tipo"
                   :rules="rule"
                   required
                   outlined
@@ -67,7 +40,7 @@
       <v-container >
         <v-btn
           outlined
-          to="/coupons"
+          to="/categories"
           color="red"
         >
           Cancelar
@@ -86,16 +59,14 @@
 
 <script>
 export default {
-  layout: 'adminLayout',
+  layout: 'originalDefault',
   name: 'CadastroAutoresPage',
   data () {
     return {
       valid: false,
-      coupon: {
+      category: {
         id: null,
-        code: null,
-        limitDate: null,
-        discountPercentage: null,
+        type: null
       },
       rule: [
         v => !!v || 'Esse campo é obrigatório'
@@ -113,26 +84,23 @@ export default {
         if (!this.valid) {
           return this.$toast.warning('O formulário de cadastro não é válido!')
         }
-        let coupon = {
-          code: this.coupon.code,
-          limitDate: this.coupon.limitDate,
-          discountPercentage: this.coupon.discountPercentage,
+        let category = {
+          type: this.category.type
         };
-        if (!this.coupon.id) {
-          await this.$axios.$post('http://localhost:3333/coupons/persist', coupon);
+        if (!this.category.id) {
+          await this.$axios.$post('http://localhost:3333/categories/persist', category);
           this.$toast.success('Cadastro realizado com sucesso!');
-          return this.$router.push('/coupons');
+          return this.$router.push('/categories');
         }
-        await this.$axios.$post(`http://localhost:3333/coupons/persist/${this.coupon.id}`, coupon);
+        await this.$axios.$post(`http://localhost:3333/categories/persist/${this.category.id}`, category);
         this.$toast.success('Cadastro atualizado com sucesso!');
-        return this.$router.push('/coupons');
+        return this.$router.push('/categories');
       } catch (error) {
         this.$toast.error('Ocorreu um erro ao realizar o cadastro!');
       }
     },
     async getById (id) {
-      let response = await this.$axios.$get(`http://localhost:3333/coupons/${id}`);
-      this.coupon = response.data;
+      this.category = await this.$axios.$get(`http://localhost:3333/categories/${id}`);
     }
   }
 }

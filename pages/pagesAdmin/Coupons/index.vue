@@ -1,13 +1,13 @@
 <template>
   <v-container>
-    <h1>Consulta de Metodos de Pagamento</h1>
+    <h1>Consulta De Cupons</h1>
     <hr>
     <v-container>
       <v-row>
         <v-col>
           <v-btn
             outlined
-            @click="getCategories()"
+            @click="getCoupons"
           >
             Pesquisar
             <v-icon style="margin-left: 5%">
@@ -19,7 +19,7 @@
           <v-btn
             style="margin-left: -77%"
             outlined
-            to="/PaymentMethods/cadastro"
+            to="/coupons/cadastro"
           >
             Cadastrar
             <v-icon style="margin-left: 5%">
@@ -32,7 +32,7 @@
     <v-container>
       <v-data-table
         :headers="headers"
-        :items="paymentMethods"
+        :items="coupons"
         :items-per-page="10"
         class="elevation-1"
       >
@@ -59,6 +59,7 @@
 <script>
 export default {
   name: 'ConsultaAutoresPage',
+  layout: 'originalDefault',
   data () {
     return {
       headers: [
@@ -66,43 +67,50 @@ export default {
           text: 'Codigo', //nome da coluna
           align: 'center', //alinhamento -center, end, start
           sortable: false, //se permite ordenação dos dados por essa coluna
-          value: 'id', //é o dado que essa coluna vai receber
+          value: 'code', //é o dado que essa coluna vai receber
         },
         {
-          text: 'Metodo de Pagamento',
+          text: 'Data de Limite',
           align: 'center',
           sortable: false,
-          value: 'type',
+          value: 'limitDate',
+        },
+        {
+          text: 'Categoria',
+          align: 'center',
+          sortable: false,
+          value: 'discountPercentage',
         },
         
         {text: "", value: "actions"}
       ],
-      paymentMethods: []
+      coupons: []
     }
   },
   created () {
-    this.getPaymentMethods()
+    this.getCoupons()
   },
   
   methods: {
-    async getPaymentMethods () {
-      this.paymentMethods = await this.$axios.$get('http://localhost:3333/payment-methods');
+    async getCoupons () {
+      this.coupons = await this.$axios.$get('http://localhost:3333/coupons').then(res => res.data);
+      
     },
-    async destroy (category) {
+    async destroy (cupom) {
       try {
-        if (confirm(`Do you wish to delete the category: id ${category.id} - ${category.type}?`)) {
-          let response = await this.$axios.$post('http://localhost:3333/payment-methods/destroy', { id: category.id });
+        if (confirm(`Do you wish to delete the cupom: id ${cupom.id} ?`)) {
+          let response = await this.$axios.$post('http://localhost:3333/coupons/destroy', { id: cupom.id });
           this.$toast(response.message)
-          this.getPaymentMethods();
+          this.getCoupons();
         }
       } catch (error) {
-        this.$toast.error('An error has ocurred while trying to delete the category =( ');
+        this.$toast.error('An error has ocurred while trying to delete the cupom =(');
       }
     },
-    async editItem (category) {
+    async editItem (cupom) {
       this.$router.push({
-        name: 'PaymentMethods-cadastro',
-        params: { id: category.id }
+        name: 'Coupons-cadastro',
+        params: { id: cupom.id }
       });
     }
   }
